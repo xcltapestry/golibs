@@ -25,10 +25,8 @@ package redisx
 /*
 备注:
 	redis连接库之前使用redigo，这次选择了go-redis
-	分布式用推荐的 redislock
+	分布式锁推荐 redislock
 	通过自定义Interface限制所能调用的redis方法，以防误用破坏性比较大的命令
-
-	author: xcl
 */
 
 import (
