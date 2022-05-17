@@ -13,3 +13,56 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+Desktop.ini
+
+# Thumbnail cache files
+._*
+Thumbs.db
+
+# Temp File
+*.swp
+*.swa
+*.swo
+
+# github merge file
+*.orig
+
+#vscode
+.vscode
+
+
+# Compiled C++ files
+*.out
+
+# Application specific files
+venv
+node_modules
+.sass-cache
+
+# Compiled Python files
+*.pyc
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.TemporaryItems
+.DocumentRevisions-V100
+.fseventsd
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+
+.idea
+
