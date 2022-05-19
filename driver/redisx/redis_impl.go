@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/bsm/redislock"
+	"github.com/go-redis/redis/v8"
 )
 
 type Client struct {

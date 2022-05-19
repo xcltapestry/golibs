@@ -23,9 +23,7 @@ package mysqlx
  */
 
 import (
-	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/didi/gendry/manager"
 	_ "github.com/go-sql-driver/mysql"

@@ -23,7 +23,7 @@ package confd
  */
 
 import (
-	"github.com/xcltapestry/golibs/utils/strx"
+	"github.com/xcltapestry/golibs/utils/strutil"
 	"path/filepath"
 	"strings"
 	"time"
@@ -78,7 +78,7 @@ func paseConfigFile(confFile string) (string, string, error) {
 	// }
 	path, fileName := filepath.Split(confFile)
 	ext := strings.ToLower(filepath.Ext(fileName))
-	fext := strx.SubString(ext, 1, len(ext))
+	fext := strutil.SubString(ext, 1, len(ext))
 
 	return path, fext, nil
 }

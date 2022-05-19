@@ -1,4 +1,4 @@
-package filesystem
+package strutil
 
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
@@ -23,35 +23,17 @@ package filesystem
  */
 
 import (
-	"bytes"
-	"os/exec"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
-//CheckCmdExists 检测命令是否存在
-func CheckCmdExists(cmd string) bool {
-	_, err := exec.LookPath(cmd) //ls
-	if err != nil {
-		return false //fmt.Printf("didn't find 'ls' executable\n")
-	}
-	return true //	fmt.Printf("'ls' executable is in '%s'\n", path)
+func TxtDiff(text1, text2 string) string {
+	dmp := diffmatchpatch.New()
+	diffs := dmp.DiffMain(text1, text2, false)
+	return dmp.DiffPrettyText(diffs)
 }
 
-func ExecCommand(command string) (stdout, stderr string, err error) {
-	var out bytes.Buffer
-	var errout bytes.Buffer
-
-	cmd := exec.Command("/bin/bash", "-c", command)
-	if IsWindows() {
-		cmd = exec.Command("cmd")
-	}
-	cmd.Stdout = &out
-	cmd.Stderr = &errout
-	err = cmd.Run()
-
-	if err != nil {
-		stderr = string(errout.Bytes())
-	}
-	stdout = string(out.Bytes())
-
-	return
+func HtmlDiff(text1, text2 string) string {
+	dmp := diffmatchpatch.New()
+	diffs := dmp.DiffMain(text1, text2, false)
+	return dmp.DiffPrettyHtml(diffs)
 }
