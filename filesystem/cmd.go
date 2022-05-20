@@ -24,6 +24,7 @@ package filesystem
 
 import (
 	"bytes"
+	"github.com/xcltapestry/golibs/utils/sysutil"
 	"os/exec"
 )
 
@@ -41,7 +42,7 @@ func ExecCommand(command string) (stdout, stderr string, err error) {
 	var errout bytes.Buffer
 
 	cmd := exec.Command("/bin/bash", "-c", command)
-	if IsWindows() {
+	if sysutil.IsWindows() {
 		cmd = exec.Command("cmd")
 	}
 	cmd.Stdout = &out
