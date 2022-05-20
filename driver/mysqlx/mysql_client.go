@@ -1,5 +1,10 @@
 package mysqlx
 
+import (
+	"database/sql"
+	"sync"
+)
+
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
  *
@@ -22,13 +27,21 @@ package mysqlx
  * @version 1.0
  */
 
+/*
+	备注:
+		在试过直接写原生的SQL,SQLX,GORM后，会选择gendry，是因为它是一个相对比较平衡的解决方案。
+		很多研发同学喜好ORM，是因为它更方便，快速。但一个系统越到后期，瓶颈多在数据库。
+		而ORM生成的SQL即难以定位,又不好调优，即有机会写SQL,又能提高生产力的方案，才是我心目中的好方案。
+		技术选型这个事，还要看团队本身以及公司所处阶段各种情况，所以我说的都是个人看法，仅供参考。
+		另外记录下执行 SQL 时的耗时，甚至打上标记，会更有助于定义和优化服务。
+		当然，这可以在框架层做或在DBA那边看。如果都没有，那还是多打点日志吧。
+*/
+
 import (
-	"database/sql"
 	"fmt"
 	"github.com/didi/gendry/manager"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
-	"sync"
 	"time"
 )
 
