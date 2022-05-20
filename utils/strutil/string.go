@@ -1,5 +1,10 @@
 package strutil
 
+import (
+	"reflect"
+	"unsafe"
+)
+
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
  *
@@ -21,6 +26,27 @@ package strutil
  * @license http://www.apache.org/licenses/  Apache v2 License
  * @version 1.0
  */
+
+/*
+ 推荐多用 go 1.18 新增的这两个函数：
+  strings.Cut
+  strings.Clone
+
+
+*/
+
+func UnsafeString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
+}
+
+func UnsafeBytes(s string) (bs []byte) {
+	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))
+	bh := (*reflect.SliceHeader)(unsafe.Pointer(&bs))
+	bh.Data = sh.Data
+	bh.Len = sh.Len
+	bh.Cap = sh.Len
+	return
+}
 
 //SubString 能处理包含中文的字符串截取
 func SubString(str string, begin, length int) (substr string) {

@@ -25,6 +25,7 @@ package httpx
 import (
 	"compress/flate"
 	"compress/gzip"
+	"context"
 	"crypto/tls"
 	"fmt"
 	"github.com/andybalholm/brotli"
@@ -63,7 +64,8 @@ func (c *Client) GetClient() *http.Client {
 type HeaderOpion func(*http.Request)
 
 // method 参数: http.MethodGet  http.MethodPost 等， 如为非标准的访问请求会被报400
-func (c *Client) Request(method, url string, body io.Reader, opts ...HeaderOpion) (*http.Response, error) {
+func (c *Client) Request(ctx context.Context, method, url string, body io.Reader,
+	opts ...HeaderOpion) (*http.Response, error) {
 	start := time.Now()
 
 	// 检查url的合法性,有通过构建特殊url,攻击本地文件系统的案例，特别是调外部url时
@@ -71,7 +73,7 @@ func (c *Client) Request(method, url string, body io.Reader, opts ...HeaderOpion
 		return nil, fmt.Errorf("[Request] url存在安全风险！ %s: %s err:%v", method, url, err)
 	}
 
-	req, err := http.NewRequest(method, url, body)
+	req, err := http.NewRequestWithContext(ctx, method, url, body)
 	if err != nil {
 		return nil, fmt.Errorf("[Request] NewRequest %s: %s err:%v", method, url, err)
 	}
@@ -88,10 +90,6 @@ func (c *Client) Request(method, url string, body io.Reader, opts ...HeaderOpion
 			}
 		}
 	}
-
-	// http 客户端超时设置
-	// ctx, _ := context.WithTimeout(context.Background(), time.Millisecond*100)
-	// req = req.WithContext(ctx)
 
 	// 发起请求
 	resp, err := c.client.Do(req)
@@ -116,9 +114,10 @@ type Response struct {
 }
 
 //GetByte 相当于http.get()
-func (c *Client) GetByte(method, url string, body io.Reader, opts ...HeaderOpion) (*Response, error) {
+func (c *Client) GetByte(ctx context.Context, method, url string, body io.Reader,
+	opts ...HeaderOpion) (*Response, error) {
 	//start := time.Now()
-	resp, err := c.Request(method, url, body, opts...)
+	resp, err := c.Request(ctx, method, url, body, opts...)
 	if err != nil {
 		return nil, err
 	}
