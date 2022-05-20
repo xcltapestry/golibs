@@ -51,10 +51,6 @@ import (
 // }
 //////////////////////////////////////////////
 
-//GeneralErrorMap  全局变量，在应用服务启动时，初始化将相关的错误信息(code与message)赋值进来。
-// 一个业务系统建议只有一个统一的全局error map.以防系统复杂后，不能有效的归纳整理错误信息
-var GeneralErrorMap map[int]string
-
 type GeneralError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
