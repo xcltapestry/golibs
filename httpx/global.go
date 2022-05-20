@@ -1,4 +1,4 @@
-package ctxutil
+package httpx
 
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
@@ -22,33 +22,11 @@ package ctxutil
  * @version 1.0
  */
 
-import (
-	"context"
-	"errors"
-	"fmt"
+const (
+	_UA_macos = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
 )
 
-/**
-
-example:
-	import "github.com/google/uuid"
-
-	ctx := context.Background()
-	key, val := "traceId", uuid.New().String()
-
-	subCtx := AddCtxValue[string, string](ctx, key, val)
-	traceId, _ := ReadCtxValue[string, string](subCtx, key)
-	fmt.Println(" traceId = ", traceId)
-
-*/
-func AddCtxValue[T any, V any](ctx context.Context, key T, val V) context.Context {
-	return context.WithValue(ctx, key, val)
-}
-
-func ReadCtxValue[T any, V any](ctx context.Context, key T) (V, error) {
-	if ret, ok := ctx.Value(key).(V); ok {
-		return ret, nil
-	} else {
-		return ret, errors.New(fmt.Sprint(" 在context中没有找到此Key: ", key))
-	}
+//GHeader 默认必设的http头，可在应用初始化时配置
+var GHeader = map[string]string{
+	"User-Agent": _UA_macos,
 }

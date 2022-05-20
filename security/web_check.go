@@ -1,4 +1,4 @@
-package ctxutil
+package security
 
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
@@ -23,32 +23,20 @@ package ctxutil
  */
 
 import (
-	"context"
-	"errors"
 	"fmt"
+	"net/url"
 )
 
-/**
-
-example:
-	import "github.com/google/uuid"
-
-	ctx := context.Background()
-	key, val := "traceId", uuid.New().String()
-
-	subCtx := AddCtxValue[string, string](ctx, key, val)
-	traceId, _ := ReadCtxValue[string, string](subCtx, key)
-	fmt.Println(" traceId = ", traceId)
-
-*/
-func AddCtxValue[T any, V any](ctx context.Context, key T, val V) context.Context {
-	return context.WithValue(ctx, key, val)
-}
-
-func ReadCtxValue[T any, V any](ctx context.Context, key T) (V, error) {
-	if ret, ok := ctx.Value(key).(V); ok {
-		return ret, nil
-	} else {
-		return ret, errors.New(fmt.Sprint(" 在context中没有找到此Key: ", key))
+// IsURLSafe
+// 判断请求的URL是否安全, 如果安全, 返回 true, nil
+// 如果不安全, 返回false, error.Error() 为相应的描述
+func IsURLSafe(rawURL string) (safe bool, err error) {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return false, fmt.Errorf("secutils: url not safe, invalid url:%s", rawURL)
 	}
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return false, fmt.Errorf("secutils: url not safe, invalid schema, url:%s", rawURL)
+	}
+	return true, nil
 }
