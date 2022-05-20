@@ -24,6 +24,7 @@ package sysutil
 
 import (
 	"net"
+	"strings"
 )
 
 //InternalIp 来自go-zero
@@ -62,4 +63,20 @@ func isEthDown(f net.Flags) bool {
 
 func isLoopback(f net.Flags) bool {
 	return f&net.FlagLoopback == net.FlagLoopback
+}
+
+func IsIpV4(ipstr string) bool {
+	ip := net.ParseIP(ipstr)
+	if ip == nil {
+		return false
+	}
+	return strings.Contains(ipstr, ".")
+}
+
+func IsIpV6(ipstr string) bool {
+	ip := net.ParseIP(ipstr)
+	if ip == nil {
+		return false
+	}
+	return strings.Contains(ipstr, ":")
 }

@@ -23,7 +23,6 @@ package strutil
  */
 
 import (
-	"net"
 	"net/url"
 	"regexp"
 	"strings"
@@ -61,22 +60,6 @@ func IsAllLower(str string) bool {
 		}
 	}
 	return str != ""
-}
-
-func IsIpV4(ipstr string) bool {
-	ip := net.ParseIP(ipstr)
-	if ip == nil {
-		return false
-	}
-	return strings.Contains(ipstr, ".")
-}
-
-func IsIpV6(ipstr string) bool {
-	ip := net.ParseIP(ipstr)
-	if ip == nil {
-		return false
-	}
-	return strings.Contains(ipstr, ":")
 }
 
 var isEmailRegexMatcher *regexp.Regexp = regexp.MustCompile(`\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`)
