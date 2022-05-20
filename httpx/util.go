@@ -29,6 +29,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -40,6 +41,18 @@ func GetRemoteAddr(r *http.Request) string {
 		return v
 	}
 	return r.RemoteAddr
+}
+
+//GetCookieValue 获取指定名称的cookie
+func GetCookieValue(cookies, name string) (ret string) {
+	cs := strings.Split(cookies, ";")
+	for _, v := range cs {
+		tempStr := strings.Split(v, "=")
+		if tempStr[0] == name || tempStr[0] == ("["+name) {
+			return strings.Split(tempStr[1], "]")[0]
+		}
+	}
+	return
 }
 
 //DownloadFile 更多用于下载文件
