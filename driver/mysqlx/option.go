@@ -23,15 +23,7 @@ package mysqlx
  */
 
 import (
-	"context"
-	"database/sql"
-	"errors"
-	"fmt"
-	"github.com/didi/gendry/manager"
 	_ "github.com/go-sql-driver/mysql"
-	"strings"
-	"sync"
-	"time"
 )
 
 type Option struct {
@@ -41,7 +33,7 @@ type Option struct {
 
 func NewOption() *Option {
 	return &Option{
-		maxConnLifetimeSec: defaultMaxConnLifetimeSec,
+		maxConnLifetimeSec: _defaultMaxConnLifetimeSec,
 		maxOpenConns:       50,
 		maxIdleConns:       5,
 	}

@@ -1,5 +1,7 @@
 package mysqlx
 
+import "time"
+
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
  *
@@ -21,8 +23,6 @@ package mysqlx
  * @license http://www.apache.org/licenses/  Apache v2 License
  * @version 1.0
  */
-
-import "time"
 
 const (
 	_defaultMaxConnLifetimeSec = 28000
