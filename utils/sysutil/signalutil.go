@@ -30,7 +30,7 @@ import (
 )
 
 //Signals 用于处理系统消息,以便处理更新或安全中断
-func Signals(q chan bool, fsigexit func(), fsigusr2 func()) {
+func Signals(q chan bool, fsigexit func(), fsigusr1 func()) {
 	sigs := make(chan os.Signal)
 	defer close(sigs)
 
@@ -61,7 +61,7 @@ EXIT:
 				fsigexit()
 				break EXIT
 			case syscall.SIGUSR1:
-				fsigusr2()
+				fsigusr1()
 			case syscall.SIGUSR2:
 				fsigexit()
 				break EXIT
