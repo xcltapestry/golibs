@@ -26,6 +26,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 )
 
 /**
@@ -51,4 +52,30 @@ func ReadCtxValue[T any, V any](ctx context.Context, key T) (V, error) {
 	} else {
 		return ret, errors.New(fmt.Sprint(" 在context中没有找到此Key: ", key))
 	}
+}
+
+func ShrinkDeadline(ctx context.Context, timeout time.Duration) time.Time {
+	var timeoutTime = time.Now().Add(timeout)
+	if ctx == nil {
+		return timeoutTime
+	}
+	if deadline, ok := ctx.Deadline(); ok && timeoutTime.After(deadline) {
+		return deadline
+	}
+	return timeoutTime
+}
+
+// 赋值 context 对象
+// 通过r.context 获取上下文，会在当前 goroutine 结束时调用 release
+// 重新生成新的对象，脱离当前生命周期
+func ContextDup(ctx context.Context, ctxParams map[int]string) context.Context {
+	if ctx == nil {
+		return nil
+	}
+
+	ctxDup := context.Background()
+	for k, v := range ctxParams {
+		ctxDup = AddCtxValue(ctxDup, k, v)
+	}
+	return ctxDup
 }
