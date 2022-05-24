@@ -24,13 +24,10 @@ package httpx
 
 import (
 	"errors"
-	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"net/url"
 	"strings"
-
-	"github.com/xcltapestry/golibs/utils/jsonx"
-	"github.com/xcltapestry/golibs/utils/strutil"
 )
 
 const xForwardFor = "X-Forward-For"
@@ -79,37 +76,23 @@ func DelHeader(h *http.Header, name string) error {
 	return nil
 }
 
-//FromJSON 将body 进行 json解码
-func FromJSON(r *http.Request, req interface{}) (body []byte, err error) {
-	if r == nil {
-		err = fmt.Errorf("[FromJSON] http.Request is null. URL:%s", r.RequestURI)
-		return
+// CopyHTTPRequest 用于复制新的HTTP Request
+//  CopyHTTPRequest(req, ioutil.NopCloser(&bytes.Buffer{}))
+func CopyHTTPRequest(r *http.Request, body io.ReadCloser) *http.Request {
+	req := new(http.Request)
+	*req = *r
+	req.URL = &url.URL{}
+	*req.URL = *r.URL
+	req.Body = body
+
+	req.Header = http.Header{}
+	for k, v := range r.Header {
+		for _, vv := range v {
+			req.Header.Add(k, vv)
+		}
 	}
 
-	if r.Body == nil {
-		err = fmt.Errorf("[FromJSON] r.Body is null. URL:%s", r.RequestURI)
-		return
-	}
-
-	postBody, er := ioutil.ReadAll(r.Body)
-	if er != nil {
-		err = fmt.Errorf("[FromJSON] ReadAll Failure. URL:%s err:%s", r.RequestURI, er)
-		return
-	}
-	defer r.Body.Close()
-
-	if len(postBody) == 0 {
-		err = fmt.Errorf("[FromJSON] Body is null.  URL:%s", r.RequestURI)
-		return
-	}
-
-	if er = jsonx.Unmarshal(postBody, req); er != nil {
-		err = fmt.Errorf("[FromJSON] json.Unmarshal Failure. err:%s, body:%s", er,
-			strutil.UnsafeString(postBody))
-	}
-
-	body = postBody
-	return
+	return req
 }
 
 //DownloadFile 更多用于下载文件

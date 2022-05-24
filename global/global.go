@@ -26,12 +26,20 @@ package global
 //  httpx
 ////////////////////////////
 const (
+	// ContentTypeJSON json类型
+	ContentTypeJSON = "application/json; charset=UTF-8"
+	// ContentTypeXML xml类型
+	ContentTypeXML = "application/xml; charset=UTF-8"
+	// ContentTypeForm form表单 application/x-www-form-urlencoded;charset=utf-8
+	ContentTypeForm = "application/x-www-form-urlencoded; charset=UTF-8"
+
 	_UA_macos = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36"
 )
 
 //DefaultHeader 默认必设的http头，可在应用初始化时配置
 var Httpx_DefaultHeader = map[string]string{
 	"User-Agent": _UA_macos,
+	//"Content-Type": "application/json",
 }
 
 ////////////////////////////

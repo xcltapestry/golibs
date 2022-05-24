@@ -25,7 +25,7 @@ package jsonx
 /*
  ps:
 	json的解析在高并发压力下，对资源和速度的影响比较大，
-	所以有必要进行替换
+	所以有必要用性能更好的 json-iterator 替换掉 原生的
 */
 
 import (
