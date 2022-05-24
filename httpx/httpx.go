@@ -28,12 +28,14 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/andybalholm/brotli"
-	"github.com/xcltapestry/golibs/security"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/andybalholm/brotli"
+	"github.com/xcltapestry/golibs/global"
+	"github.com/xcltapestry/golibs/security"
 )
 
 type Client struct {
@@ -79,7 +81,7 @@ func (c *Client) Request(ctx context.Context, method, url string, body io.Reader
 	}
 
 	// 先执行默认的http头设置
-	for k, v := range GHeader {
+	for k, v := range global.Httpx_DefaultHeader {
 		req.Header.Set(k, v)
 	}
 	// 再执行定制化http头

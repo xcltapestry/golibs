@@ -30,7 +30,7 @@ const (
 )
 
 //DefaultHeader 默认必设的http头，可在应用初始化时配置
-var Httpx.DefaultHeader = map[string]string{
+var Httpx_DefaultHeader = map[string]string{
 	"User-Agent": _UA_macos,
 }
 
@@ -39,6 +39,4 @@ var Httpx.DefaultHeader = map[string]string{
 ////////////////////////////
 //GeneralErrorMap  全局变量，在应用服务启动时，初始化将相关的错误信息(code与message)赋值进来。
 // 一个业务系统建议只有一个统一的全局error map.以防系统复杂后，不能有效的归纳整理错误信息
-var errorx.GeneralErrorMap map[int]string
-
-
+var Errorx_GeneralErrorMap map[int]string

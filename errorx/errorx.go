@@ -31,6 +31,7 @@ package errorx
 
 import (
 	"github.com/pkg/errors"
+	"github.com/xcltapestry/golibs/global"
 )
 
 //////////////////////////////////////////////
@@ -61,7 +62,7 @@ func (e *GeneralError) Error() string {
 }
 
 func (self *GeneralError) GetMessage(code int) string {
-	errMessage, found := GeneralErrorMap[code]
+	errMessage, found := global.Errorx_GeneralErrorMap[code]
 	if found == false {
 		return "Unknown error code"
 	}
