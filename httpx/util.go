@@ -23,14 +23,14 @@ package httpx
  */
 
 import (
-	"compress/flate"
-	"compress/gzip"
+	"errors"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
-	"time"
+
+	"github.com/xcltapestry/golibs/utils/jsonx"
+	"github.com/xcltapestry/golibs/utils/strutil"
 )
 
 const xForwardFor = "X-Forward-For"
@@ -55,54 +55,111 @@ func GetCookieValue(cookies, name string) (ret string) {
 	return
 }
 
-//DownloadFile 更多用于下载文件
-func DownloadFile(fileName, method, url string, body io.Reader, opts ...HeaderOpion) error {
-	start := time.Now()
-	c := NewClient()
-	resp, err := c.Request(method, url, body, opts...)
-	if err != nil {
-		return fmt.Errorf("[DownloadFile] http.Request error: %s elapsed:%d", err, time.Since(start))
+// AddHeader 添加一个头
+func AddHeader(h *http.Header, name, value string) error {
+	if h == nil {
+		return errors.New("[AddHeader] header is null. ")
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("[DownloadFile] unexpected statusCode(%d) err:%v elapsed:%d",
-			resp.StatusCode, err, time.Since(start))
+	if h.Get(name) == "" {
+		h.Set(name, value)
+		return nil
 	}
-
-	var reader io.ReadCloser
-	switch resp.Header.Get("Content-Encoding") {
-	case "gzip":
-		// logger.Debug("[Request] Content-Encoding gzip! url:", url)
-		reader, _ = gzip.NewReader(resp.Body)
-	case "deflate":
-		// logger.Debug("[Request] Content-Encoding deflate! url:", url)
-		reader = flate.NewReader(resp.Body)
-	default:
-		reader = resp.Body
-	}
-	defer reader.Close()
-
-	//再检查新的路径的安全性
-	//dir, file := filepath.Split(fileName)
-	//err = security.CheckFileSecurity(dir, file)
-	//if err != nil {
-	//	return fmt.Errorf("[DownloadFile] CheckFileSecurity error: %v elapsed:%d", err, time.Since(start))
-	//}
-
-	// 对于 下载前，文件是否已存在，是覆盖还是其他处理，放在这个函数以外处理
-	//下载文件
-	f, err := os.Create(fileName)
-	if err != nil {
-		return fmt.Errorf("[DownloadFile] os.Create error: %v elapsed:%d", err, time.Since(start))
-	}
-	defer f.Close()
-
-	//Write the bytes to the fiel
-	_, err = io.Copy(f, reader)
-	if err != nil && err != io.EOF {
-		return fmt.Errorf("[DownloadFile] file copy error: %v elapsed:%d", err, time.Since(start))
-	}
-
+	h.Add(name, value)
 	return nil
 }
+
+// DelHeader  删除一个header 项
+func DelHeader(h *http.Header, name string) error {
+	if h == nil {
+		return errors.New("[DelHeader] header is null. ")
+	}
+	if v := h.Get(name); v != "" {
+		h.Del(name)
+	}
+	return nil
+}
+
+//FromJSON 将body 进行 json解码
+func FromJSON(r *http.Request, req interface{}) (body []byte, err error) {
+	if r == nil {
+		err = fmt.Errorf("[FromJSON] http.Request is null. URL:%s", r.RequestURI)
+		return
+	}
+
+	if r.Body == nil {
+		err = fmt.Errorf("[FromJSON] r.Body is null. URL:%s", r.RequestURI)
+		return
+	}
+
+	postBody, er := ioutil.ReadAll(r.Body)
+	if er != nil {
+		err = fmt.Errorf("[FromJSON] ReadAll Failure. URL:%s err:%s", r.RequestURI, er)
+		return
+	}
+	defer r.Body.Close()
+
+	if len(postBody) == 0 {
+		err = fmt.Errorf("[FromJSON] Body is null.  URL:%s", r.RequestURI)
+		return
+	}
+
+	if er = jsonx.Unmarshal(postBody, req); er != nil {
+		err = fmt.Errorf("[FromJSON] json.Unmarshal Failure. err:%s, body:%s", er,
+			strutil.UnsafeString(postBody))
+	}
+
+	body = postBody
+	return
+}
+
+//DownloadFile 更多用于下载文件
+// func DownloadFile(fileName, method, url string, body io.Reader, opts ...HeaderOpion) error {
+// 	start := time.Now()
+// 	c := NewClient()
+// 	resp, err := c.Request(method, url, body, opts...)
+// 	if err != nil {
+// 		return fmt.Errorf("[DownloadFile] http.Request error: %s elapsed:%d", err, time.Since(start))
+// 	}
+// 	defer resp.Body.Close()
+
+// 	if resp.StatusCode != http.StatusOK {
+// 		return fmt.Errorf("[DownloadFile] unexpected statusCode(%d) err:%v elapsed:%d",
+// 			resp.StatusCode, err, time.Since(start))
+// 	}
+
+// 	var reader io.ReadCloser
+// 	switch resp.Header.Get("Content-Encoding") {
+// 	case "gzip":
+// 		// logger.Debug("[Request] Content-Encoding gzip! url:", url)
+// 		reader, _ = gzip.NewReader(resp.Body)
+// 	case "deflate":
+// 		// logger.Debug("[Request] Content-Encoding deflate! url:", url)
+// 		reader = flate.NewReader(resp.Body)
+// 	default:
+// 		reader = resp.Body
+// 	}
+// 	defer reader.Close()
+
+// 	//再检查新的路径的安全性
+// 	//dir, file := filepath.Split(fileName)
+// 	//err = security.CheckFileSecurity(dir, file)
+// 	//if err != nil {
+// 	//	return fmt.Errorf("[DownloadFile] CheckFileSecurity error: %v elapsed:%d", err, time.Since(start))
+// 	//}
+
+// 	// 对于 下载前，文件是否已存在，是覆盖还是其他处理，放在这个函数以外处理
+// 	//下载文件
+// 	f, err := os.Create(fileName)
+// 	if err != nil {
+// 		return fmt.Errorf("[DownloadFile] os.Create error: %v elapsed:%d", err, time.Since(start))
+// 	}
+// 	defer f.Close()
+
+// 	//Write the bytes to the fiel
+// 	_, err = io.Copy(f, reader)
+// 	if err != nil && err != io.EOF {
+// 		return fmt.Errorf("[DownloadFile] file copy error: %v elapsed:%d", err, time.Since(start))
+// 	}
+
+// 	return nil
+// }
