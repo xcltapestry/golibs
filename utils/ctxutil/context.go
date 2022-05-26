@@ -54,6 +54,7 @@ func ReadCtxValue[T any, V any](ctx context.Context, key T) (V, error) {
 	}
 }
 
+//ShrinkDeadline 得到剩余TTL
 func ShrinkDeadline(ctx context.Context, timeout time.Duration) time.Time {
 	var timeoutTime = time.Now().Add(timeout)
 	if ctx == nil {
