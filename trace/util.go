@@ -1,4 +1,4 @@
-package handlex
+package trace
 
 /**
  * Copyright 2022 golibs Author. All Rights Reserved.
@@ -23,26 +23,16 @@ package handlex
  */
 
 import (
-	"fmt"
-
-	"reflect"
-	"runtime"
-	"strings"
-	"time"
+	uuid "github.com/nu7hatch/gouuid"
 )
 
-// GetHandlerFuncName 得到Handler处理函数名
-func GetHandlerFuncName(f interface{}) (handlerFuncName string) {
-	handlerFuncName = GetFuncName(f)
-	if slash := strings.LastIndex(handlerFuncName, "/"); slash >= 0 {
-		handlerFuncName = handlerFuncName[slash+1:]
-	}
-	return
-}
+// GetTraceID generate a unique ID for the server
+func GetTraceID() string {
+	id, _ := uuid.NewV4()
 
-// GetFuncName get function name
-// funcPc2, _, _, _ := runtime.Caller(0)
-// fmt.Println(" FuncForPC:", runtime.FuncForPC(funcPc2).Name())
-func GetFuncName(i interface{}) string {
-	return runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+	rid := id.String()
+	if rid == "" || len(rid) < 8 { // 取毫秒
+		return fmt.Sprintf("%d", time.Now().UTC().UnixNano()/1000)
+	}
+	return rid[0:7] // 取uuid的前8位
 }

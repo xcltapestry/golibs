@@ -29,6 +29,8 @@ import (
 )
 
 /**
+ 收拢 http handler 中的通用处理
+
 ps :
   1. 建议不要在context放太多key,维护很麻烦容易漏,且业务变化很快，用一个结构体收拢就好
   2. context下的key ，各种包用多了，是有可能重复的，所以建议改成 struct{} 方式
