@@ -83,4 +83,12 @@ func (rc *Client) Decr(key string) (int64, error) {
 	return rc.rdb.Decr(context.Background(), key).Result()
 }
 
+func (rc *Client) LRange(key string, start, stop int64) ([]string, error) {
+	return rc.rdb.LRange(context.Background(), key, start, stop).Result()
+}
+
+func (rc *Client) Publish(channel string, message interface{}) (int64, error) {
+	return rc.rdb.Publish(context.Background(), channel, message).Result()
+}
+
 // reflect.TypeOf(v)

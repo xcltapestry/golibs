@@ -51,6 +51,9 @@ type Redis interface {
 	Incr(key string) (int64, error)
 	Decr(key string) (int64, error)
 
+	LRange(key string, start, stop int64) ([]string, error)
+	Publish(channel string, message interface{}) (int64, error)
+
 	NewLocker() *RedisLock //分布式锁
 }
 
