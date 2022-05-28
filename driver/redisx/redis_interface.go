@@ -31,6 +31,7 @@ package redisx
 
 import (
 	"context"
+	"github.com/go-redis/redis/v8"
 	"time"
 )
 
@@ -53,6 +54,7 @@ type Redis interface {
 
 	LRange(key string, start, stop int64) ([]string, error)
 	Publish(channel string, message interface{}) (int64, error)
+	PSubscribe(channel string, message interface{}) (*redis.PubSub, error)
 
 	NewLocker() *RedisLock //分布式锁
 }

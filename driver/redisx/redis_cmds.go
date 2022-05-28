@@ -24,6 +24,8 @@ package redisx
 
 import (
 	"context"
+	"errors"
+	"github.com/go-redis/redis/v8"
 	"time"
 )
 
@@ -89,6 +91,14 @@ func (rc *Client) LRange(key string, start, stop int64) ([]string, error) {
 
 func (rc *Client) Publish(channel string, message interface{}) (int64, error) {
 	return rc.rdb.Publish(context.Background(), channel, message).Result()
+}
+
+func (rc *Client) PSubscribe(channel string, message interface{}) (*redis.PubSub, error) {
+	ret := rc.rdb.PSubscribe(context.Background(), channel)
+	if ret == nil {
+		return nil, errors.New(" PSubscribe is failed! ")
+	}
+	return ret, nil
 }
 
 // reflect.TypeOf(v)
