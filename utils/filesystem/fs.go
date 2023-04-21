@@ -30,7 +30,7 @@ func GetFileSize(path string) int64 {
 	return fi.Size()
 }
 
-//IsDir 检查路径是否为目录
+// IsDir 检查路径是否为目录
 func IsDir(path string) bool {
 	fio, err := os.Lstat(path)
 	if os.IsNotExist(err) {
@@ -44,7 +44,7 @@ func IsDir(path string) bool {
 	return fio.IsDir()
 }
 
-//IsDirExist 检测目录是否存在, true: 为存在  false:为目录不存在
+// IsDirExist 检测目录是否存在, true: 为存在  false:为目录不存在
 func IsDirExist(dir string) (exist bool) {
 	ret, err := os.Stat(dir)
 	if os.IsNotExist(err) {
@@ -72,22 +72,23 @@ func IsHidden(path string) bool {
 	return "." == path[:1]
 }
 
-//FormatFileSize  字节的单位转换 保留两位小数
-// 				  文件大小字节单位换算为 EB TB GB MB KB B
+// FormatFileSize  字节的单位转换 保留两位小数
+//
+//	文件大小字节单位换算为 EB TB GB MB KB B
 func FormatFileSize(fileSize int64) (size string) {
 	if fileSize < 1024 {
 		//return strconv.FormatInt(fileSize, 10) + "B"
-		return fmt.Sprintf("%.2fB", float64(fileSize)/float64(1))
+		return fmt.Sprintf("%.2f B", float64(fileSize)/float64(1))
 	} else if fileSize < (1024 * 1024) {
-		return fmt.Sprintf("%.2fKB", float64(fileSize)/float64(1024))
+		return fmt.Sprintf("%.2f KB", float64(fileSize)/float64(1024))
 	} else if fileSize < (1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fMB", float64(fileSize)/float64(1024*1024))
+		return fmt.Sprintf("%.2f MB", float64(fileSize)/float64(1024*1024))
 	} else if fileSize < (1024 * 1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fGB", float64(fileSize)/float64(1024*1024*1024))
+		return fmt.Sprintf("%.2f GB", float64(fileSize)/float64(1024*1024*1024))
 	} else if fileSize < (1024 * 1024 * 1024 * 1024 * 1024) {
-		return fmt.Sprintf("%.2fTB", float64(fileSize)/float64(1024*1024*1024*1024))
+		return fmt.Sprintf("%.2f TB", float64(fileSize)/float64(1024*1024*1024*1024))
 	} else { //if fileSize < (1024 * 1024 * 1024 * 1024 * 1024 * 1024)
-		return fmt.Sprintf("%.2fEB", float64(fileSize)/float64(1024*1024*1024*1024*1024))
+		return fmt.Sprintf("%.2f EB", float64(fileSize)/float64(1024*1024*1024*1024*1024))
 	}
 }
 
@@ -111,7 +112,7 @@ func FileLineCounter(r io.Reader) (int, error) {
 	}
 }
 
-//ComputeMd5WithSize 计算文件MD5与大小
+// ComputeMd5WithSize 计算文件MD5与大小
 func ComputeMd5WithSize(filePath string) (string, int64, error) {
 	var result []byte
 	file, err := os.Open(filePath)
@@ -138,7 +139,7 @@ func ComputeMd5WithSize(filePath string) (string, int64, error) {
 	return str, stat.Size(), nil
 }
 
-//检测文件所在目录是否存在，如不存在，则创建它
+// 检测文件所在目录是否存在，如不存在，则创建它
 func CheckAndMkFilePath(file string) error {
 	fdir, _ := filepath.Split(file)
 	if !IsExist(fdir) {
@@ -150,7 +151,7 @@ func CheckAndMkFilePath(file string) error {
 	return nil
 }
 
-//CheckAndMkDir 检测目录是否存在，如不存在，则自动创建
+// CheckAndMkDir 检测目录是否存在，如不存在，则自动创建
 func CheckAndMkDir(fdir string) error {
 	if !IsExist(fdir) {
 		err := os.MkdirAll(fdir, 0755)
