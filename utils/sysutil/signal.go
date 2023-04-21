@@ -29,7 +29,7 @@ import (
 	"syscall"
 )
 
-//Signals 用于处理系统消息,以便处理更新或安全中断
+// Signals 用于处理系统消息,以便处理更新或安全中断
 func Signals(q chan bool, fsigexit func(), fsigusr1 func()) {
 	sigs := make(chan os.Signal)
 	defer close(sigs)
@@ -49,24 +49,24 @@ EXIT:
 			}
 		}
 	default:
-		for {
-			signal.Notify(sigs, syscall.SIGQUIT,
-				syscall.SIGTERM,
-				syscall.SIGINT,
-				syscall.SIGUSR1,
-				syscall.SIGUSR2)
-
-			switch <-sigs {
-			case syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT:
-				fsigexit()
-				break EXIT
-			case syscall.SIGUSR1:
-				fsigusr1()
-			case syscall.SIGUSR2:
-				fsigexit()
-				break EXIT
-			}
-		}
+		//for {
+		//	signal.Notify(sigs, syscall.SIGQUIT,
+		//		syscall.SIGTERM,
+		//		syscall.SIGINT,
+		//		syscall.SIGUSR1,
+		//		syscall.SIGUSR2)
+		//
+		//	switch <-sigs {
+		//	case syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT:
+		//		fsigexit()
+		//		break EXIT
+		//	case syscall.SIGUSR1:
+		//		fsigusr1()
+		//	case syscall.SIGUSR2:
+		//		fsigexit()
+		//		break EXIT
+		//	}
+		//}
 
 	} //end switch default
 	q <- true
